@@ -476,9 +476,25 @@ function btn_gold_manual() {
 
 function make_gold_list(golds) {
 	let ul = '<ul class="list-group rt-gold">';
-	ul += golds.map(g => '<li class="list-group-item">'+esc_html(g)+'</li>').join('');
+	ul += golds.map(function(g) {
+		return '<li class="list-group-item rt-gold-item"><span class="rt-gold-value">'+esc_html(g)+'</span> <button tabindex="-1" type="button" class="btn btn-sm btn-outline-danger btnGoldRemove" title="remove this gold value">Remove</button></li>';
+	}).join('');
 	ul += '</ul>';
 	return ul;
+}
+
+function btn_gold_remove() {
+	let tr = $(this).closest('tr');
+	let c = tr.attr('data-corp');
+	let h = tr.attr('data-hash');
+	let s = tr.find('.nav-link.active').text();
+	let li = $(this).closest('li');
+	let gs = li.closest('.rt-gold').find('.rt-gold-value').map(function() {
+		return $(this).text();
+	}).get();
+	gs.splice(li.index(), 1);
+	let tid = toast('Removing Gold', 'Corpus '+c+' sentence '+h+' step '+s);
+	post({a: 'gold', c: c, h: h, s: s, gs: JSON.stringify(gs)}).done(function() { $(tid).toast('hide'); load(state._page); });
 }
 
 function btn_gold_manual_accept() {
@@ -1003,6 +1019,7 @@ function cb_load(rv) {
 	$('.btnGoldReplace').off().click(btn_gold_replace);
 	$('.btnGoldAdd').off().click(btn_gold_add);
 	$('.btnGoldManual').off().click(btn_gold_manual);
+	$('.rt-changes').off('click', '.btnGoldRemove').on('click', '.btnGoldRemove', btn_gold_remove);
 	$('.btnGoldManualAccept').off().click(btn_gold_manual_accept);
 	$('.btnGoldManualCancel').off().click(btn_gold_manual_cancel);
 	$('.btnAcceptUntil').off().click(btn_accept_until);

@@ -73,6 +73,16 @@ ul.rt-gold:before {
     font-weight: bold;
 }
 
+.rt-gold-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 1ex;
+}
+
+.rt-gold-value {
+	flex: 1;
+}
+
 input.rt-gold-input-box {
     width: 75%;
 }
