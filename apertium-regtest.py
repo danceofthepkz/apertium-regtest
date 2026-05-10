@@ -624,7 +624,10 @@ class Corpus:
         return list(set(changes))
     def set_gold(self, hsh, vals, step=None):
         blob = self.step(step)
-        blob['gold'][hsh] = vals
+        if vals:
+            blob['gold'][hsh] = vals
+        elif hsh in blob['gold']:
+            del blob['gold'][hsh]
         if not Corpus.flat:
             ensure_dir_exists('gold')
         save_gold(self.gold_name(blob['cmd']), blob['gold'])
